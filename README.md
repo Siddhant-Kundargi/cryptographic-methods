@@ -34,4 +34,4 @@ note : create a special folder for this program and do not delete the soln.pickl
 ->similar usage method of version 1 but with minor changes:
   + Number of shuffled arrays changed from 50 to 100
   + Upper case alphabets can now be used
-  + New Symbols added: 
+  + New Symbols added: (.),(,),!,@,#,$,%,&,^,(,),_,+,=,;,:,',",?,/,\
