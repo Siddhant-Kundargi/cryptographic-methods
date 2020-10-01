@@ -34,4 +34,10 @@ note : create a special folder for this program and do not delete the soln.pickl
 ->similar usage method of version 1 but with minor changes:
   + Number of shuffled arrays changed from 50 to 100
   + Upper case alphabets can now be used
-  + New Symbols added: (.),(,),!,@,#,$,%,&,^,(,),_,+,=,;,:,',",?,/,\
+  + New Symbols added: (.),(,),!,@,#,$,%,&,^,(,),_,+,=,;,:,',",?,/,\ and many more
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=====>cryper version 4<====
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+->added support for a 2-password system out of which one is the soln file and other is a text based password that you chose
+  !!! Note that both soln file and the password are required for decrypting and in loss of either the encrypted data is inretrieveable !!!
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
