@@ -40,4 +40,5 @@ note : create a special folder for this program and do not delete the soln.pickl
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ->added support for a 2-password system (out of which one is the soln file and other is a text based password that you choose)
   !!! Note that both soln file and the password are required for decrypting and in loss of either the encrypted data is inretrieveable !!!
+  !!! Also note that this exe has been compiled in a gnu/linux based system so it may or may not work in other operating systems !!!
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
