@@ -40,5 +40,6 @@ note : create a special folder for this program and do not delete the soln.pickl
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ->added support for a 2-password system (out of which one is the soln file and other is a text based password that you choose)
   !!! Note that both soln file and the password are required for decrypting and in loss of either the encrypted data is inretrieveable !!!
+  !!!Note that the exe/pyc without specification is for linux and ones with windows specified is for windows only and may not work in other systems!!! 
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #### NOTE: If you were able to crack the encrypted file produced in cryper_v4 without the use of soln.pickle && password please do email me at <a>tinuscientist@gmail.com</a> with the source code for the decrypter (Thank you for doing so in advance!!!)
