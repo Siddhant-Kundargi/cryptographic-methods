@@ -48,4 +48,4 @@ note : create a special folder for this program and do not delete the soln.pickl
  +safety increased as the soln is needed twice for decryption process
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#### NOTE: If you were able to crack the encrypted file produced in cryper_v4 without the use of soln.pickle && password please do email me at <a>tinuscientist@gmail.com</a> with the source code for the decrypter (Thank you for doing so in advance!!!)
+#### NOTE: If you were able to crack the encrypted file produced in cryper_v5 without the use of soln.pickle && password please do email me at <a>tinuscientist@gmail.com</a> with the source code for the decrypter (Thank you for doing so in advance!!!)
