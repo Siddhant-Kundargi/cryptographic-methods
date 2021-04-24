@@ -259,7 +259,7 @@ def output_help():
     if input_for_the_help_prompt == "s":
         print("Steps to use: \n\n"
         "<*>If you are using for the first time start by typing \"new\" \n"
-        ">just randomajor_listy enter strings from your keyboard when asked for\n"
+        ">just randomly enter strings from your keyboard when asked for\n"
         ">This is also what you should do if you feel your soln file has\n"
         "been leaked \n"
         "<*>In the next step type \"encp\" \n"
