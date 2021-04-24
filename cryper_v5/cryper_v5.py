@@ -7,8 +7,9 @@ import time
 # this part of code is just defing functions
 # for reducing the size of main code thus saving
 # precious programming and review time
+# for this version it might not be that big but later will be appended as the program gets more complicated
 
-def arr_str(arr):
+def array_to_string(arr):
     x = ""
     for element in arr:
         x += element
@@ -18,8 +19,8 @@ def arr_str(arr):
 #########
 # main code
 
-def new_soln():
-    major_lst = []
+def generate_new_solution_file():
+    major_list = []                                                    #this is where all the shuffled arrays will be stored
     symbols = ['.',',','!','@','#','%','&','*','^','-',
            '|','[',']','{','}','(',')','_','+','=',';',
            ':',"'",'"','?','/','>','<','`','~','\\']
@@ -35,115 +36,133 @@ def new_soln():
 
     numbers = [0,1,2,3,4,5,6,7,8,9]
 
-    pri_lst = symbols + uppercase + lowercase + numbers + currency + special_characters
+    #parent_list is the array that holds all the allowed char set without shuffling
 
-    inp_var =  input("Enter a some random symbols(more the better):\n")
-    random.seed(a = inp_var)
+    parent_list = symbols + uppercase + lowercase + numbers + currency + special_characters
 
-    def lst_set(pri_lst):
-        res_lst = []
-        sec_lst = pri_lst.copy()
+    input_for_seed =  input("Enter a some random symbols(more the better):\n")
+    random.seed(a = input_for_seed)
 
-        while len(sec_lst) != 0:
-            x = random.choice(sec_lst)
-            sec_lst.remove(x)
-            res_lst.append(x)
-        sec_lst = pri_lst.copy()
-        return res_lst
+    def list_setup(parent_list):                    #generated randomly shuffled list
+        result_list = []
+        intermediate_list = parent_list.copy()
 
-    def sd_rst():
-        t = str(time.time())
-        rnrn = random.choice(t)
-        random.seed(str(inp_var) + rnrn)
+        while len(intermediate_list) != 0:
+            x = random.choice(intermediate_list)
+            intermediate_list.remove(x)
+            result_list.append(x)
+        intermediate_list = parent_list.copy()
+        return result_list
+
+    #resets the seed (this will be removed later in favour of secure pseudo-random generation module)
+
+    def seed_reset():
+        absolute_time = str(time.time())
+        random_char = random.choice(absolute_time)
+        random.seed(str(input_for_seed) + random_char)
 
     n = 0
 
+    #major_list generation
+
     while n != 100:
-        some_lst = lst_set(pri_lst)
-        major_lst.append(some_lst)
-        sd_rst()
+        temporary_list = list_setup(parent_list)
+        major_list.append(temporary_list)
+        seed_reset()
         n += 1
 
-    pckl = open("soln.pickle",'wb')
-    pickle.dump(major_lst,pckl)
-    pckl.close()
+    #putting the major_list in the solution_file
+
+    pickle_solution_file = open("solution_file.pickle",'wb')
+    pickle.dump(major_list,pickle_solution_file)
+    pickle_solution_file.close()
 
     main()
 
-def cryptit():
-    pkl = open("soln.pickle",'rb')
-    major_lst = pickle.load(pkl)
-    pkl.close()
+def encrypt():
 
-    inp = input("Enter the text to be encrpted: \n")
+    #here(below) first, a randomised char substitution is carried out
+    pickle_solution_file = open("solution_file.pickle",'rb')
+    major_list = pickle.load(pickle_solution_file)
+    pickle_solution_file.close()
 
-    res = ""
+    clear_text_message = input("Enter the text to be encrpted: \n")
 
-    for element in inp:
+    char_substitution_step_result = ""
+
+    #(below)here the script choose a random integer from 0 to 99 and use the list at that index of the major_list
+    #then in that list the index of the char is noted
+    #the two indexes (one of the list in the major_list and one of the char in the list) are combined to give a 4 digit intger result
+
+    for element in clear_text_message:
         y = random.randint(0,99)
         try:
-            z = major_lst[y].index(eval(element))
+            z = major_list[y].index(eval(element))
         except:
-            z = major_lst[y].index(element)
+            z = major_list[y].index(element)
         if len(str(y)) == 2 and len(str(z)) == 2:
-            res += str(y)+str(z)
+            char_substitution_step_result += str(y)+str(z)
         elif len(str(y)) == 1 and len(str(z)) == 1:
-            res += ("0" + str(y) + "0" + str(z))
+            char_substitution_step_result += ("0" + str(y) + "0" + str(z))
         elif len(str(y)) == 1:
-            res += ("0" + str(y) + str(z))
+            char_substitution_step_result += ("0" + str(y) + str(z))
         elif len(str(z)) == 1:
-            res += (str(y) + "0" + str(z))
+            char_substitution_step_result += (str(y) + "0" + str(z))
 
-    if len(res) >= 40 :
-        res = passit(2,res,major_lst)
+    if len(char_substitution_step_result) >= 40 :
+        char_substitution_step_result = add_secondary_password(2,char_substitution_step_result,major_list)
 
-    res = compression1(res,major_lst)
+    #(below)here we change and resubstitute in a way that it becomes unreadable without the solution file.
+    #also we add a secondary password that isn't that effective if solution file is not securely kept
+    #thus revealing most of the cipher .
 
-    txt = open("encrypted.txt",'w')
-    txt.write(res)
-    txt.close()
+    final_encrypted_result = modification_and_resubstitution(char_substitution_step_result,major_list)
+
+    cipher_txt_output = open("encrypted.txt",'w')
+    cipher_txt_output.write(final_encrypted_result)
+    cipher_txt_output.close()
 
     main()
 
 def decrypt():
-    ext_file = open("soln.pickle",'rb')
-    major_lst = pickle.load(ext_file)
-    ext_file.close()
+    pickle_solution_file = open("solution_file.pickle",'rb')
+    major_list = pickle.load(pickle_solution_file)
+    pickle_solution_file.close()
 
-    encpt = open("encrypted.txt",'r')
-    enc = str(encpt.readline())
-    encpt.close()
-    enc = uncomp1(enc,major_lst)
-    enc = unpass(enc,major_lst)
-    encl = len(enc)
+    final_encrypted_result = open("encrypted.txt",'r')
+    enc = str(final_encrypted_result.readline())
+    final_encrypted_result.close()
+    enc = reverse_modification_and_resubstitution(enc,major_list)
+    enc = use_secondary_password_for_decryption(enc,major_list)
+    length_of_enc = len(enc)
 
-    adr_lst = []
-    ltr_adr_lst = []
+    index_list = []
+    char_index_list = []
 
     n = 0
 
-    while n <= encl - 4:
+    while n <= length_of_enc - 4:
         new_var = enc[n] + enc[n+1]
-        adr_lst.append(new_var)
+        index_list.append(new_var)
         nex_var = enc[n+2] + enc[n+3]
-        ltr_adr_lst.append(nex_var)
+        char_index_list.append(nex_var)
         n += 4
 
     msg = ""
     counter = 0
-    for element in adr_lst:
+    for element in index_list:
         adr_loc = counter
-        adr_mjl = major_lst[int(element)]
-        alp_loc = int(ltr_adr_lst[adr_loc])
+        adr_mjl = major_list[int(element)]
+        alp_loc = int(char_index_list[adr_loc])
         alp = adr_mjl[alp_loc]
         msg += str(alp)
         counter += 1
 
     return msg
 
-def passit(valueofconfig,cryptedL1,major_lst):
+def add_secondary_password(valueofconfig,cryptedL1,major_list):
     new_cyp_l = list(cryptedL1)
-    truelist = major_lst[34]
+    truelist = major_list[34]
 
     inppass = input("Enter the desired password(must be odd no of characters)\n")
 
@@ -162,55 +181,55 @@ def passit(valueofconfig,cryptedL1,major_lst):
                 jusran = str(random.randint(0,9))
                 new_cyp_l.insert(resmd1,jusran)
 
-            return arr_str(new_cyp_l)
+            return array_to_string(new_cyp_l)
 
 
     else : print("please enter odd character password")
 
-    passit(valueofconfig,cryptedL1,major_lst)
+    add_secondary_password(valueofconfig,cryptedL1,major_list)
 
-def unpass(res,ML):
+def use_secondary_password_for_decryption(res,major_list):
     skipper = 0
-    pswd = input("Enter the password\n")
+    secondary_password = input("Enter the password\n")
     res = list(res)
-    uselst = ML[34]
-    pslen = 0
+    list_to_be_used_for_decryption = major_list[34]
+    length_of_secondary_password = 0
 
-    for element in pswd:
+    for element in secondary_password:
         try:
             element = int(element)
         except:
             element = str(element)
-        pslen += (uselst.index(element))%7
+        length_of_secondary_password += (list_to_be_used_for_decryption.index(element))%7
 
-    pswd = reversed(pswd)
-    for element in pswd:
-        del res[pslen]
-        pslen -= (uselst.index(element))%7
+    secondary_password = reversed(secondary_password)
+    for element in secondary_password:
+        del res[length_of_secondary_password]
+        length_of_secondary_password -= (list_to_be_used_for_decryption.index(element))%7
 
-    return arr_str(res)
+    return array_to_string(res)
 
-def compression1(some_res,ML):
-    some_res = list(some_res)
-    last_one = some_res.pop()
-    encode_lst = ML[83]
+def modification_and_resubstitution(input_result,major_list):
+    input_result = list(input_result)
+    temporary_poped_char_variable = input_result.pop()
+    list_to_use_for_resubstitution = major_list[83]
     newresult = []
     compressed_val = ""
     n = 0
-    while n < len(some_res):
-        sorter_var = str(some_res[n])+str(some_res[n+1])
+    while n < len(input_result):
+        sorter_var = str(input_result[n])+str(input_result[n+1])
         newresult.append(int(sorter_var))
         n += 2
     for element in newresult:
-        decoder_var = str(encode_lst[element])
+        decoder_var = str(list_to_use_for_resubstitution[element])
         compressed_val += decoder_var
-    compressed_val += str(last_one)
+    compressed_val += str(temporary_poped_char_variable)
     return str(compressed_val)
 
-def uncomp1(some_enc,ML):
+def reverse_modification_and_resubstitution(some_enc,major_list):
     some_enc = list(some_enc)
-    last_one = some_enc.pop()
-    encode_lst = ML[83]
+    temporary_poped_char_variable = some_enc.pop()
+    list_to_use_for_resubstitution = major_list[83]
     encresult = []
     decomp_val = ""
 
@@ -219,7 +238,7 @@ def uncomp1(some_enc,ML):
             element = int(element)
         except:
             element = str(element)
-        resvar1 = encode_lst.index(element)
+        resvar1 = list_to_use_for_resubstitution.index(element)
         encresult.append(resvar1)
 
     for element in encresult:
@@ -228,26 +247,26 @@ def uncomp1(some_enc,ML):
         elif len(str(element)) == 1:
             decomp_val += ("0" + str(element))
 
-    decomp_val += str(last_one)
+    decomp_val += str(temporary_poped_char_variable)
     return decomp_val
 
-def outputhelp():
+def output_help():
 
     print("would you like to know (s)teps to use or (r)evise function names or(g)eneral info\n ")
 
-    input_info = input(">>(s)/(r)/(g)>")
+    input_for_the_help_prompt = input(">>(s)/(r)/(g)>")
 
-    if input_info == "s":
+    if input_for_the_help_prompt == "s":
         print("Steps to use: \n\n"
         "<*>If you are using for the first time start by typing \"new\" \n"
-        ">just randomly enter strings from your keyboard when asked for\n"
+        ">just randomajor_listy enter strings from your keyboard when asked for\n"
         ">This is also what you should do if you feel your soln file has\n"
         "been leaked \n"
         "<*>In the next step type \"encp\" \n"
         ">Now simply enter the text to be excrypted and then the password^\n\n"
         "^password should have odd number of characters\n\n"
         ">Your Text is now encrypted and is ready to share (encrypted.txt)\n"
-        "!!Remember!! your soln.pickle file is as important as your password\n"
+        "!!Remember!! your solution_file.pickle file is as important as your password\n"
         "Do not lose it or the decryption may not work\n\n"
         "<*>Now the part where you decrypt the text file\n"
         "!!Remember!! keep your soln and encrypted file in the same directory\n"
@@ -258,10 +277,10 @@ def outputhelp():
         "running\n"
         ">for permanent decryption use the command \"decpf\"\n\n"
         "use \"help\" to print this info \n"
-        "to exit use \"exit\" or \"end\" \n\n\n "
+        "to exit use \"exit\" \n\n\n "
         )
 
-    elif input_info == "r":
+    elif input_for_the_help_prompt == "r":
         print("Revision of commands:\n\n"
         "new   => for making a fresh soln file\n"
         "encp  => for encrypting text\n"
@@ -271,7 +290,7 @@ def outputhelp():
         "\"help\" to print this help\n\n\n"
         )
 
-    elif input_info == "g":
+    elif input_for_the_help_prompt == "g":
         print("General information:\n\n"
         "Cryper \n\n"
         "Designed by : Siddhant Kundargi\n"
@@ -284,34 +303,34 @@ def outputhelp():
 
     main()
 
-def perma_dec():
+def permanently_decrypt():
     msg = decrypt()
-    encpt = open("encrypted.txt",'w')
-    encpt.write(msg)
+    final_encrypted_result = open("encrypted.txt",'w')
+    final_encrypted_result.write(msg)
     print(msg)
 
 def main():
 
-    input_ultimate = input("What to do?:\n")
+    main_input = input("What to do?:\n")
 
-    if input_ultimate == "new":
-        new_soln()
+    if main_input == "new":
+        generate_new_solution_file()
 
-    elif input_ultimate == "exit":
+    elif main_input == "exit":
         exit()
 
-    elif input_ultimate == "encp":
-        cryptit()
+    elif main_input == "encp":
+        encrypt()
 
-    elif input_ultimate == "decp":
+    elif main_input == "decp":
         msg = decrypt()
         print(msg)
 
-    elif input_ultimate == "decpf":
-        perma_dec()
+    elif main_input == "decpf":
+        permanently_decrypt()
 
-    elif input_ultimate == "help":
-        outputhelp()
+    elif main_input == "help":
+        output_help()
 
     else :
         print("Invalid command")
