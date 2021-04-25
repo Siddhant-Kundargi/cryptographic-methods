@@ -110,7 +110,7 @@ def encrypt():
             char_substitution_step_result += (str(y) + "0" + str(z))
 
     if len(char_substitution_step_result) >= 40 :
-        char_substitution_step_result = add_secondary_password(2,char_substitution_step_result,major_list)
+        char_substitution_step_result = add_secondary_password(char_substitution_step_result,major_list)
 
     #(below)here we change and resubstitute in a way that it becomes unreadable without the solution file.
     #also we add a secondary password that isn't that effective if solution file is not securely kept
@@ -130,68 +130,76 @@ def decrypt():
     pickle_solution_file.close()
 
     final_encrypted_result = open("encrypted.txt",'r')
-    enc = str(final_encrypted_result.readline())
+    cipher_text = str(final_encrypted_result.readline())
     final_encrypted_result.close()
-    enc = reverse_modification_and_resubstitution(enc,major_list)
-    enc = use_secondary_password_for_decryption(enc,major_list)
-    length_of_enc = len(enc)
+    cipher_text = reverse_modification_and_resubstitution(cipher_text,major_list)
+    cipher_text = use_secondary_password_for_decryption(cipher_text,major_list)
+    length_of_cipher_text = len(cipher_text)
 
     index_list = []
     char_index_list = []
 
     n = 0
 
-    while n <= length_of_enc - 4:
-        new_var = enc[n] + enc[n+1]
-        index_list.append(new_var)
-        nex_var = enc[n+2] + enc[n+3]
-        char_index_list.append(nex_var)
+    while n <= length_of_cipher_text - 4:
+        index_of_list_in_major_list = cipher_text[n] + cipher_text[n+1]
+        index_list.append(index_of_list_in_major_list)
+        index_of_char = cipher_text[n+2] + cipher_text[n+3]
+        char_index_list.append(index_of_char)
         n += 4
 
-    msg = ""
+    decrypted_plain_text = ""
     counter = 0
     for element in index_list:
-        adr_loc = counter
-        adr_mjl = major_list[int(element)]
-        alp_loc = int(char_index_list[adr_loc])
-        alp = adr_mjl[alp_loc]
-        msg += str(alp)
+        index_list_index = counter
+        list_in_focus = major_list[int(element)]
+        char_list_index = int(char_index_list[index_list_index])
+        character = list_in_focus[char_list_index]
+        decrypted_plain_text += str(character)
         counter += 1
 
-    return msg
+    return decrypted_plain_text
 
-def add_secondary_password(valueofconfig,cryptedL1,major_list):
-    new_cyp_l = list(cryptedL1)
-    truelist = major_list[34]
+def add_secondary_password(char_substituted_cipher,major_list):
 
-    inppass = input("Enter the desired password(must be odd no of characters)\n")
+    #the below code works in the following way:
+        #find the index of the char in the list_to_use_for_adding_random_chars
+        #(2)find the remainder of the index after dividing it with 7
+        #put a random char at index equal the result from previous step
+        #for the next iteration add the random char at the old index + the result of the 2nd step for this char
+        #repeat this for every char in the whole secondary_password
+        #in the result group all digits in the sets of 2 . Now resubstitute the digits with the char at the index = value inside the set
 
-    res = ""
-    resmd1 = 0
+    cypher_text_in_list_format = list(char_substituted_cipher)
+    list_to_use_for_adding_random_chars = major_list[34]
+
+    secondary_password = input("Enter the desired password(must be odd no of characters)\n")
+
+    index_of_the_char_in_password = 0
 
 
-    if len(inppass) % 2 != 0 :
+    if len(secondary_password) % 2 != 0 :
 
-            for element in inppass:
+            for element in secondary_password:
                 try:
                     element = int(element)
                 except:
                     element = str(element)
-                resmd1 += (truelist.index(element))%7
-                jusran = str(random.randint(0,9))
-                new_cyp_l.insert(resmd1,jusran)
+                index_of_the_char_in_password += (list_to_use_for_adding_random_chars.index(element))%7
+                random_integer = str(random.randint(0,9))
+                cypher_text_in_list_format.insert(index_of_the_char_in_password,random_integer)
 
-            return array_to_string(new_cyp_l)
+            return array_to_string(cypher_text_in_list_format)
 
 
     else : print("please enter odd character password")
 
-    add_secondary_password(valueofconfig,cryptedL1,major_list)
+    add_secondary_password(char_substituted_cipher,major_list)
 
-def use_secondary_password_for_decryption(res,major_list):
-    skipper = 0
+def use_secondary_password_for_decryption(cipher_text,major_list):
+
     secondary_password = input("Enter the password\n")
-    res = list(res)
+    cipher_text = list(cipher_text)
     list_to_be_used_for_decryption = major_list[34]
     length_of_secondary_password = 0
 
@@ -204,51 +212,50 @@ def use_secondary_password_for_decryption(res,major_list):
 
     secondary_password = reversed(secondary_password)
     for element in secondary_password:
-        del res[length_of_secondary_password]
+        del cipher_text[length_of_secondary_password]
         length_of_secondary_password -= (list_to_be_used_for_decryption.index(element))%7
 
-    return array_to_string(res)
+    return array_to_string(cipher_text)
 
 def modification_and_resubstitution(input_result,major_list):
     input_result = list(input_result)
     temporary_poped_char_variable = input_result.pop()
     list_to_use_for_resubstitution = major_list[83]
-    newresult = []
-    compressed_val = ""
+    list_of_indexes_of_chars = []
+    cipher_text = ""
     n = 0
     while n < len(input_result):
         sorter_var = str(input_result[n])+str(input_result[n+1])
-        newresult.append(int(sorter_var))
+        list_of_indexes_of_chars.append(int(sorter_var))
         n += 2
-    for element in newresult:
-        decoder_var = str(list_to_use_for_resubstitution[element])
-        compressed_val += decoder_var
-    compressed_val += str(temporary_poped_char_variable)
-    return str(compressed_val)
+    for element in list_of_indexes_of_chars:
+        cipher_text += str(list_to_use_for_resubstitution[element])
+    cipher_text += str(temporary_poped_char_variable)
+    return str(cipher_text)
 
-def reverse_modification_and_resubstitution(some_enc,major_list):
-    some_enc = list(some_enc)
-    temporary_poped_char_variable = some_enc.pop()
+def reverse_modification_and_resubstitution(cipher_text,major_list):
+    cipher_text = list(cipher_text)
+    temporary_poped_char_variable = cipher_text.pop()
     list_to_use_for_resubstitution = major_list[83]
-    encresult = []
-    decomp_val = ""
+    list_of_indexes_before_encryption = []
+    cipher_text_before_resubstitution = ""
 
-    for element in some_enc:
+    for element in cipher_text:
         try:
             element = int(element)
         except:
             element = str(element)
         resvar1 = list_to_use_for_resubstitution.index(element)
-        encresult.append(resvar1)
+        list_of_indexes_before_encryption.append(resvar1)
 
-    for element in encresult:
+    for element in list_of_indexes_before_encryption:
         if len(str(element)) == 2:
-            decomp_val += str(element)
+            cipher_text_before_resubstitution += str(element)
         elif len(str(element)) == 1:
-            decomp_val += ("0" + str(element))
+            cipher_text_before_resubstitution += ("0" + str(element))
 
-    decomp_val += str(temporary_poped_char_variable)
-    return decomp_val
+    cipher_text_before_resubstitution += str(temporary_poped_char_variable)
+    return cipher_text_before_resubstitution
 
 def output_help():
 
@@ -259,7 +266,7 @@ def output_help():
     if input_for_the_help_prompt == "s":
         print("Steps to use: \n\n"
         "<*>If you are using for the first time start by typing \"new\" \n"
-        ">just randomly enter strings from your keyboard when asked for\n"
+        ">just randomajor_listy enter strings from your keyboard when asked for\n"
         ">This is also what you should do if you feel your soln file has\n"
         "been leaked \n"
         "<*>In the next step type \"encp\" \n"
