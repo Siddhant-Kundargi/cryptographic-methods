@@ -161,7 +161,7 @@ def decrypt():
     return decrypted_plain_text
 
 def add_secondary_password(char_substituted_cipher,major_list):
-
+    
     #the below code works in the following way:
         #find the index of the char in the list_to_use_for_adding_random_chars
         #(2)find the remainder of the index after dividing it with 7
@@ -180,21 +180,22 @@ def add_secondary_password(char_substituted_cipher,major_list):
 
     if len(secondary_password) % 2 != 0 :
 
-            for element in secondary_password:
-                try:
-                    element = int(element)
-                except:
-                    element = str(element)
-                index_of_the_char_in_password += (list_to_use_for_adding_random_chars.index(element))%7
-                random_integer = str(random.randint(0,9))
-                cypher_text_in_list_format.insert(index_of_the_char_in_password,random_integer)
+        for element in secondary_password:
+            try:
+                element = int(element)
+            except:
+                element = str(element)
+            index_of_the_char_in_password += (list_to_use_for_adding_random_chars.index(element))%7
+            random_integer = str(random.randint(0,9))
+            cypher_text_in_list_format.insert(index_of_the_char_in_password,random_integer)
 
-            return array_to_string(cypher_text_in_list_format)
+        return array_to_string(cypher_text_in_list_format)
 
 
-    else : print("please enter odd character password")
+    else : 
+        print("please enter odd character password")
 
-    add_secondary_password(char_substituted_cipher,major_list)
+        return add_secondary_password(char_substituted_cipher,major_list)
 
 def use_secondary_password_for_decryption(cipher_text,major_list):
 
@@ -218,6 +219,7 @@ def use_secondary_password_for_decryption(cipher_text,major_list):
     return array_to_string(cipher_text)
 
 def modification_and_resubstitution(input_result,major_list):
+
     input_result = list(input_result)
     temporary_poped_char_variable = input_result.pop()
     list_to_use_for_resubstitution = major_list[83]
