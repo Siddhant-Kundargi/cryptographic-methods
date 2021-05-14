@@ -2,7 +2,6 @@
 
 from secrets import randbelow,choice
 from pickle import load,dump
-from hashlib import sha3_512,sha512,blake2b
 
 # Extra function declaration
 
