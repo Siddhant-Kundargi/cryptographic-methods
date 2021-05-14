@@ -1,13 +1,10 @@
-import random
-import pickle
-import datetime
-import time
+#!/bin/python3
 
-##########
-# this part of code is just defing functions
-# for reducing the size of main code thus saving
-# precious programming and review time
-# for this version it might not be that big but later will be appended as the program gets more complicated
+from secrets import randbelow,choice
+from pickle import load,dump
+from hashlib import sha3_512,sha512,blake2b
+
+# Extra function declaration
 
 def array_to_string(arr):
     x = ""
@@ -40,26 +37,17 @@ def generate_new_solution_file():
 
     parent_list = symbols + uppercase + lowercase + numbers + currency + special_characters
 
-    input_for_seed =  input("Enter a some random symbols(more the better):\n")
-    random.seed(a = input_for_seed)
 
     def list_setup(parent_list):                    #generated randomly shuffled list
         result_list = []
         intermediate_list = parent_list.copy()
 
         while len(intermediate_list) != 0:
-            x = random.choice(intermediate_list)
+            x = choice(intermediate_list)
             intermediate_list.remove(x)
             result_list.append(x)
         intermediate_list = parent_list.copy()
         return result_list
-
-    #resets the seed (this will be removed later in favour of secure pseudo-random generation module)
-
-    def seed_reset():
-        absolute_time = str(time.time())
-        random_char = random.choice(absolute_time)
-        random.seed(str(input_for_seed) + random_char)
 
     n = 0
 
@@ -68,13 +56,12 @@ def generate_new_solution_file():
     while n != 100:
         temporary_list = list_setup(parent_list)
         major_list.append(temporary_list)
-        seed_reset()
         n += 1
 
     #putting the major_list in the solution_file
 
     pickle_solution_file = open("solution_file.pickle",'wb')
-    pickle.dump(major_list,pickle_solution_file)
+    dump(major_list,pickle_solution_file)
     pickle_solution_file.close()
 
     main()
@@ -83,7 +70,7 @@ def encrypt():
 
     #here(below) first, a randomised char substitution is carried out
     pickle_solution_file = open("solution_file.pickle",'rb')
-    major_list = pickle.load(pickle_solution_file)
+    major_list = load(pickle_solution_file)
     pickle_solution_file.close()
 
     clear_text_message = input("Enter the text to be encrpted: \n")
@@ -95,7 +82,7 @@ def encrypt():
     #the two indexes (one of the list in the major_list and one of the char in the list) are combined to give a 4 digit intger result
 
     for element in clear_text_message:
-        y = random.randint(0,99)
+        y = randbelow(100)
         try:
             z = major_list[y].index(eval(element))
         except:
@@ -126,7 +113,7 @@ def encrypt():
 
 def decrypt():
     pickle_solution_file = open("solution_file.pickle",'rb')
-    major_list = pickle.load(pickle_solution_file)
+    major_list = load(pickle_solution_file)
     pickle_solution_file.close()
 
     final_encrypted_result = open("encrypted.txt",'r')
@@ -186,7 +173,7 @@ def add_secondary_password(char_substituted_cipher,major_list):
             except:
                 element = str(element)
             index_of_the_char_in_password += (list_to_use_for_adding_random_chars.index(element))%7
-            random_integer = str(random.randint(0,9))
+            random_integer = str(randbelow(10))
             cypher_text_in_list_format.insert(index_of_the_char_in_password,random_integer)
 
         return array_to_string(cypher_text_in_list_format)
